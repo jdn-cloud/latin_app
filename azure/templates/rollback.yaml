@@ -26,8 +26,7 @@ jobs:
 
   # Determine rollback target (opposite of current)
   - script: |
-      CURRENT_SLOT="$(getCurrentSlot.KubectlOutput)"
-      CURRENT_SLOT=$(echo "$CURRENT_SLOT" | tr -d '[:space:]')
+      CURRENT_SLOT=$(echo "$KUBECTL_OUTPUT" | tr -d '[:space:]')
 
       if [ "$CURRENT_SLOT" != "blue" ] && [ "$CURRENT_SLOT" != "green" ]; then
         echo "ERROR: Cannot detect current slot (got: '${CURRENT_SLOT}'). Cannot rollback."
@@ -45,6 +44,8 @@ jobs:
       echo "##vso[task.setvariable variable=currentSlot]${CURRENT_SLOT}"
       echo "##vso[task.setvariable variable=rollbackSlot]${ROLLBACK_SLOT}"
     displayName: 'Determine Rollback Slot'
+    env:
+      KUBECTL_OUTPUT: $(getCurrentSlot.KubectlOutput)
 
   # Verify rollback deployment has running pods
   - task: Kubernetes@1
@@ -57,14 +58,16 @@ jobs:
       arguments: 'pods -n ${{ parameters.namespace }} -l app=${{ parameters.serviceName }},slot=$(rollbackSlot) --no-headers'
 
   - script: |
-      PODS="$(checkPods.KubectlOutput)"
-      if [ -z "$PODS" ]; then
-        echo "ERROR: No pods found for $(rollbackSlot) slot. Cannot rollback."
+      if [ -z "$KUBECTL_OUTPUT" ]; then
+        echo "ERROR: No pods found for $ROLLBACK_SLOT slot. Cannot rollback."
         exit 1
       fi
       echo "Rollback pods found:"
-      echo "$PODS"
+      echo "$KUBECTL_OUTPUT"
     displayName: 'Validate Rollback Pods'
+    env:
+      KUBECTL_OUTPUT: $(checkPods.KubectlOutput)
+      ROLLBACK_SLOT: $(rollbackSlot)
 
   # Switch traffic to the rollback slot
   - task: KubernetesManifest@1
