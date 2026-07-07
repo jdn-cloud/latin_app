@@ -15,7 +15,7 @@ resources:
   repositories:
     - repository: templates
       type: git
-      name: PetClinic/latina_app_template
+      name: PetClinic/latin_app_template
       ref: main
 
 variables:
@@ -29,15 +29,15 @@ variables:
 
   # Dev Environment
   devAcrConnection: 'dev-acr-service-connection'
-  devAcrLoginServer: 'acrlatinadev$(uniqueSuffix).azurecr.io'
+  devAcrLoginServer: 'acrlatindev$(uniqueSuffix).azurecr.io'
 
   # Testing Environment
   testAcrConnection: 'test-acr-service-connection'
-  testAcrLoginServer: 'acrlatinatest$(uniqueSuffix).azurecr.io'
+  testAcrLoginServer: 'acrlatintest$(uniqueSuffix).azurecr.io'
 
   # Prod Environment
   prodAcrConnection: 'prod-acr-service-connection'
-  prodAcrLoginServer: 'acrlatinaprod$(uniqueSuffix).azurecr.io'
+  prodAcrLoginServer: 'acrlatinprod$(uniqueSuffix).azurecr.io'
 
 stages:
 - stage: Build
