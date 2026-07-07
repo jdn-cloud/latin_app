@@ -1,10 +1,10 @@
-# Azure Deployment Guide — Latina App
+# Azure Deployment Guide — Latin App
 
-This guide covers deploying the **Latina App** to Azure Kubernetes Service (AKS) using the ARM template and Azure DevOps (ADO) pipelines.
+This guide covers deploying the **Latin App** to Azure Kubernetes Service (AKS) using the ARM template and Azure DevOps (ADO) pipelines.
 
 **Repositories:**
-- App source: https://github.com/jdn-cloud/latina_app
-- Pipeline templates: https://github.com/denisdbell/latina_app_template
+- App source: https://github.com/jdn-cloud/latin_app
+- Pipeline templates: https://github.com/denisdbell/latin_app_template
 
 ---
 
@@ -26,12 +26,12 @@ AKS Ingress (nginx)
 
 | Resource | Name |
 |----------|------|
-| Resource Group | `rg-latina` |
-| AKS Cluster | `aks-latina-shared` |
-| Container Registry | `acrlatina<uniqueSuffix>` |
-| Virtual Network | `vnet-latina` (10.0.0.0/16) |
+| Resource Group | `rg-latin` |
+| AKS Cluster | `aks-latin-shared` |
+| Container Registry | `acrlatin<uniqueSuffix>` |
+| Virtual Network | `vnet-latin` (10.0.0.0/16) |
 | Subnet | `snet-aks` (10.0.0.0/22) |
-| NSG | `nsg-latina` (allows HTTP/HTTPS inbound) |
+| NSG | `nsg-latin` (allows HTTP/HTTPS inbound) |
 
 ---
 
@@ -49,21 +49,21 @@ AKS Ingress (nginx)
 ### 1.1 Dowload the main.json
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/denisdbell/latina_app/refs/heads/main/azure/arm/main.json -o main.json
+curl -fsSL https://raw.githubusercontent.com/denisdbell/latin_app/refs/heads/main/azure/arm/main.json -o main.json
 
 ```
 
 ### 1.2 Create a resource group
 
 ```bash
-az group create --name rg-latina --location westus3
+az group create --name rg-latin --location westus3
 ```
 
 ### 1.3 Deploy the ARM template
 
 ```bash
 az deployment group create \
-  --resource-group rg-latina \
+  --resource-group rg-latin \
   --template-file main.json 
 ```
 
@@ -71,7 +71,7 @@ az deployment group create \
 
 ```bash
 az deployment group show \
-  --resource-group rg-latina \
+  --resource-group rg-latin \
   --name main \
   --query properties.outputs
 ```
@@ -81,13 +81,13 @@ Keep a note of `acrLoginServer` and `aksName` — you will need them in later st
 ### 1.5 Connect kubectl to the cluster
 
 ```bash
-az aks get-credentials --resource-group rg-latina --name aks-latina-shared
+az aks get-credentials --resource-group rg-latin --name aks-latin-shared
 ```
 
 ### 1.6 Create Kubernetes namespaces
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/denisdbell/latina_app/refs/heads/main/azure/arm/namespaces.yaml -o namespaces.yaml
+curl -fsSL https://raw.githubusercontent.com/denisdbell/latin_app/refs/heads/main/azure/arm/namespaces.yaml -o namespaces.yaml
 
 kubectl apply -f namespaces.yaml
 ```
@@ -98,7 +98,7 @@ This creates the `dev`, `test`, and `prod` namespaces with network isolation pol
 
 ```bash
 
-curl -fsSL https://raw.githubusercontent.com/denisdbell/latina_app/refs/heads/main/azure/arm/ingress.yaml -o ingress.yaml
+curl -fsSL https://raw.githubusercontent.com/denisdbell/latin_app/refs/heads/main/azure/arm/ingress.yaml -o ingress.yaml
 
 kubectl apply -f ingress.yaml
 ```
@@ -111,15 +111,15 @@ kubectl apply -f ingress.yaml
 
 In your Azure DevOps project, import both GitHub repos:
 
-1. **latina_app** — the main application (source of the pipeline YAML files)
-2. **latina_app_template** — the shared pipeline templates (referenced as `petclinic-pipeline-template` in the pipeline files)
+1. **latin_app** — the main application (source of the pipeline YAML files)
+2. **latin_app_template** — the shared pipeline templates (referenced as `petclinic-pipeline-template` in the pipeline files)
 
 To import: **Repos → Import repository → GitHub → paste the URL**.
 
 > The pipeline files reference the template repo as:
 > ```yaml
 > repository: templates
-> name: <project name>/latinac_app_template
+> name: <project name>/latinc_app_template
 > ref: main
 > ```
 > Make sure the imported template repo is named accordingly in ADO, or update this reference in each pipeline file.
@@ -135,7 +135,7 @@ Go to **Project Settings → Service connections**.
 | Type | Kubernetes |
 | Name | `aks-service-connection` |
 | Authentication method | Azure Subscription |
-| Cluster | `aks-latina-shared` |
+| Cluster | `aks-latin-shared` |
 
 #### Container Registry connection
 
@@ -143,7 +143,7 @@ Go to **Project Settings → Service connections**.
 |---------|-------|
 | Type | Docker Registry → Azure Container Registry |
 | Name | `acr-service-connection` |
-| ACR | `acrlatinalatina` (or your suffix) |
+| ACR | `acrlatinlatin` (or your suffix) |
 
 > The pipeline files reference three separate ACR connections (`dev-acr-service-connection`, `test-acr-service-connection`, `prod-acr-service-connection`). For a single shared ACR, create one service connection and set all three variables to the same connection name, or create three connections pointing to the same ACR.
 
@@ -153,7 +153,7 @@ In each pipeline file (`frontend-service.yml`, `image-service.yml`, `phrase-serv
 
 ```yaml
 variables:
-  uniqueSuffix: 'latina'   # ← must match your ARM deployment
+  uniqueSuffix: 'latin'   # ← must match your ARM deployment
 ```
 
 ---
@@ -163,7 +163,7 @@ variables:
 For each of the three services, create a pipeline pointing to its YAML file:
 
 1. **Pipelines → New pipeline**
-2. Source: **Azure Repos Git** → select `latina_app`
+2. Source: **Azure Repos Git** → select `latin_app`
 3. **Existing Azure Pipelines YAML file**
 4. Select the file path:
 
@@ -200,7 +200,7 @@ To trigger: **Pipelines → select pipeline → Run pipeline → Run**.
 After the frontend pipeline completes, get the ingress public IP:
 
 ```bash
-kubectl get ingress latina-ingress -n dev
+kubectl get ingress latin-ingress -n dev
 ```
 
 | Path | Service |
@@ -234,9 +234,9 @@ kubectl logs -f <pod-name> -n dev
 ### Image pull errors
 ```bash
 # Verify AKS has AcrPull access (already set by ARM template, but check if broken)
-AKS_IDENTITY=$(az aks show -g rg-latina -n aks-latina-shared \
+AKS_IDENTITY=$(az aks show -g rg-latin -n aks-latin-shared \
   --query identityProfile.kubeletidentity.objectId -o tsv)
-ACR_ID=$(az acr show --name acrlatinalatina --query id -o tsv)
+ACR_ID=$(az acr show --name acrlatinlatin --query id -o tsv)
 az role assignment create --assignee $AKS_IDENTITY --role AcrPull --scope $ACR_ID
 ```
 
@@ -249,7 +249,7 @@ kubectl get events -n dev --sort-by='.lastTimestamp'
 ### Ingress not routing correctly
 ```bash
 # Confirm the web app routing addon is enabled
-az aks show -g rg-latina -n aks-latina-shared \
+az aks show -g rg-latin -n aks-latin-shared \
   --query addonProfiles.webAppRouting.enabled
 ```
 
@@ -264,7 +264,7 @@ kubectl delete all --all -n test
 kubectl delete all --all -n prod
 
 # Remove Azure infrastructure entirely
-az group delete --name rg-latina --yes --no-wait
+az group delete --name rg-latin --yes --no-wait
 ```
 
 ---
@@ -273,8 +273,8 @@ az group delete --name rg-latina --yes --no-wait
 
 ```bash
 # Stop the cluster when not in use (saves compute costs)
-az aks stop --resource-group rg-latina --name aks-latina-shared
+az aks stop --resource-group rg-latin --name aks-latin-shared
 
 # Restart when needed
-az aks start --resource-group rg-latina --name aks-latina-shared
+az aks start --resource-group rg-latin --name aks-latin-shared
 ```
