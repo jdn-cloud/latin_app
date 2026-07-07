@@ -5,7 +5,7 @@ kind: Namespace
 metadata:
   name: dev
   labels:
-    app: latina
+    app: latin
     environment: dev
 
 ---
@@ -15,7 +15,7 @@ kind: Namespace
 metadata:
   name: test
   labels:
-    app: latina
+    app: latin
     environment: test
 
 ---
@@ -25,7 +25,7 @@ kind: Namespace
 metadata:
   name: prod
   labels:
-    app: latina
+    app: latin
     environment: prod
 
 ---
@@ -92,7 +92,7 @@ spec:
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: latina-quota
+  name: latin-quota
   namespace: dev
 spec:
   hard:
@@ -106,7 +106,7 @@ spec:
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: latina-quota
+  name: latin-quota
   namespace: test
 spec:
   hard:
@@ -120,7 +120,7 @@ spec:
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: latina-quota
+  name: latin-quota
   namespace: prod
 spec:
   hard:
