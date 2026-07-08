@@ -49,7 +49,7 @@ AKS Ingress (nginx)
 ### 1.1 Download the main.json
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jremo25/latin_app/refs/heads/blue-green/azure/arm/main.json -o main.json
+curl -fsSL https://raw.githubusercontent.com/jdn-cloud/latin_app/refs/heads/blue-green/azure/arm/main.json -o main.json
 ```
 
 ### 1.2 Create a resource group
@@ -86,7 +86,7 @@ az aks get-credentials --resource-group rg-latin --name aks-latin-shared
 ### 1.6 Create Kubernetes namespaces
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jremo25/latin_app/refs/heads/blue-green/azure/arm/namespaces.yaml -o namespaces.yaml
+curl -fsSL https://raw.githubusercontent.com/jdn-cloud/latin_app/refs/heads/blue-green/azure/arm/namespaces.yaml -o namespaces.yaml
 
 kubectl apply -f namespaces.yaml
 ```
@@ -96,7 +96,7 @@ This creates the `dev`, `test`, and `prod` namespaces with network isolation pol
 ### 1.7 Apply the ingress rules
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jremo25/latin_app/refs/heads/blue-green/azure/arm/ingress.yaml -o ingress.yaml
+curl -fsSL https://raw.githubusercontent.com/jdn-cloud/latin_app/refs/heads/blue-green/azure/arm/ingress.yaml -o ingress.yaml
 
 kubectl apply -f ingress.yaml
 ```
