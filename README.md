@@ -3,8 +3,8 @@
 This guide covers deploying the **latin App** to Azure Kubernetes Service (AKS) using the ARM template and Azure DevOps (ADO) pipelines.
 
 **Repositories:**
-- App source: https://github.com/jremo25/latin_app (branch: `blue-green`)
-- Pipeline templates: https://github.com/jremo25/latin_app_template (branch: `main`)
+- App source: https://github.com//jdn-cloud/latin_app (branch: `blue-green`)
+- Pipeline templates: https://github.com//jdn-cloud/latin_app_template (branch: `main`)
 
 ---
 
